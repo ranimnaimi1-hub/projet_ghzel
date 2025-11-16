@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout code') {
+            steps {
+                git branch: 'main', url: 'git@github.com:<ranimnaimi1>/<projet_ghzel>.git'
+            }
+        }
+
+        stage('Build with Maven') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('SAST - SonarQube') {
+            steps {
+                sh 'sonar-scanner'
+            }
+        }
+
+        stage('Deploy to Prod') {
+            steps {
+                sh 'scp target/*.jar user@192.168.177.128:/home/user/app/'
+            }
+        }
+    }
+}
